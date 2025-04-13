@@ -26,10 +26,16 @@ export class PackageItem {
   @JoinColumn({ name: 'registered_by_id' })
   registeredBy: OrgMemberEntity;
 
+  @Column({ name: 'warehouse_id' })
+  warehouseId: number;
+
   @ManyToOne(() => Warehouse, { nullable: false })
   @JoinColumn({ name: 'warehouse_id' })
   @Index()
   warehouse: Warehouse;
+
+  @Column({ name: 'organization_id' })
+  organizationId: number;
 
   @ManyToOne(() => Organization, { nullable: false })
   @JoinColumn({ name: 'organization_id' })

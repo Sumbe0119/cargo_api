@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { MessageService } from '../integrations/message.service';
@@ -20,7 +20,7 @@ import { UserEntity } from '../user/entities/user.entity';
       }),
       inject: [ConfigService],
     }),
-    UserModule,
+    forwardRef(()=>UserModule),
   ],
   controllers: [AuthController],
   providers: [AuthService,IpInfoService,MessageService],
