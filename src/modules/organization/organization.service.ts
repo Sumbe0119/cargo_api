@@ -2,8 +2,9 @@ import { HttpException, HttpStatus, Injectable, InternalServerErrorException, No
 import { CreateOrganizationDto, OrgFilterDto, UpdateOrganizationDto } from './dto/organization.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Organization } from './entities/organization.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsRelations, FindOptionsWhere, Repository } from 'typeorm';
 import { CommonReturnType, Pagination } from 'src/common/commonReturnTyp.dto';
+import { CommonState } from 'src/common/enum';
 
 
 @Injectable()
@@ -12,6 +13,16 @@ export class OrganizationService {
     @InjectRepository(Organization)
     private readonly organizationRepository: Repository<Organization>,
   ) {}
+
+  
+  async getOne(where?: FindOptionsWhere<Organization>, relations?: FindOptionsRelations<Organization>) {
+    where = {
+      ...where,
+      state: CommonState.ACTIVE,
+    }
+
+    return this.organizationRepository.findOne({ where, relations })
+  }
 
   async create(createDto: CreateOrganizationDto): Promise<CommonReturnType> {
     const existingOrg = await this.organizationRepository.findOne({

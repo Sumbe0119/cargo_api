@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body,  Param, Delete, Put, Query } from '@nestjs/common';
 import { WarehouseService } from './warehouse.service';
-import { CreateWarehouseDto } from './dto/create-warehouse.dto';
-import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
+import { CreateWarehouseDto, UpdateWarehouseDto, WareHouseFilterDto } from './dto/create-warehouse.dto';
+import { Pagination } from 'src/common/commonReturnTyp.dto';
+
 
 @Controller('warehouse')
 export class WarehouseController {
@@ -13,8 +14,13 @@ export class WarehouseController {
   }
 
   @Get()
-  findAll() {
-    return this.warehouseService.findAll();
+  findAll(@Query() input: WareHouseFilterDto, @Query() pagination: Pagination) {
+    return this.warehouseService.findAll(input,pagination);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateWarehouseDto: UpdateWarehouseDto) {
+    return this.warehouseService.update(+id, updateWarehouseDto);
   }
 
   @Get(':id')
@@ -22,10 +28,6 @@ export class WarehouseController {
     return this.warehouseService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWarehouseDto: UpdateWarehouseDto) {
-    return this.warehouseService.update(+id, updateWarehouseDto);
-  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
