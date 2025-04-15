@@ -29,7 +29,7 @@ export class PackageItem {
   @Column({ name: 'warehouse_id' })
   warehouseId: number;
 
-  @ManyToOne(() => Warehouse, { nullable: false })
+  @ManyToOne(() => Warehouse,(warehouse)=>warehouse.id, { nullable: false })
   @JoinColumn({ name: 'warehouse_id' })
   @Index()
   warehouse: Warehouse;
@@ -37,7 +37,7 @@ export class PackageItem {
   @Column({ name: 'organization_id' })
   organizationId: number;
 
-  @ManyToOne(() => Organization, { nullable: false })
+  @ManyToOne(() => Organization, (org)=>(org.id), { nullable: false })
   @JoinColumn({ name: 'organization_id' })
   @Index()
   organization: Organization;
@@ -54,10 +54,6 @@ export class PackageItem {
 
   @Column('decimal', { precision: 10, scale: 2, nullable: false })
   length: number;
-
-  // Эзлэхүүн (автоматаар тооцоолох)
-  @Column('decimal', { precision: 10, scale: 2, nullable: true })
-  volume: number;
 
   // Төлөв байдал
   @Column({
@@ -100,10 +96,7 @@ export class PackageItem {
   // Санхүүгийн мэдээлэл
   @Column('decimal', { precision: 12, scale: 2, nullable: true })
   price: number;
-
-  @Column('decimal', { precision: 12, scale: 2, nullable: true, name: 'charge_amount' })
-  chargeAmount: number;
-
+  
   // Тээврийн мэдээлэл
   @Column({ nullable: true, name: 'track_code', unique: true })
   @Index()
@@ -122,30 +115,5 @@ export class PackageItem {
   // Зурагнууд (JSON array хэлбэрээр хадгалах)
   @Column( { nullable: true })
   image: string;
-
-  // Тооцоолол хийх hook
-  @BeforeInsert()
-  @BeforeUpdate()
-  calculateVolume() {
-    this.volume = this.length * this.width * this.height;
-  }
-
-  // Хугацааны тэмдэглэлүүдийг автоматаар шинэчлэх
-  @BeforeUpdate()
-  updateTimestamps() {
-    if (this.status === ItemStatus.DELIVERED && !this.deliveredAt) {
-      this.deliveredAt = new Date();
-    }
-    if (this.status === ItemStatus.RECEIVED && !this.receivedAt) {
-      this.receivedAt = new Date();
-    }
-  }
-
-  // Virtual field (calculated)
-  dimensions?: string;
-
-  @AfterLoad()
-  setDimensions() {
-    this.dimensions = `${this.length}урт, ${this.width}өргөн, ${this.height}өндөр`;
-  }
+ 
 }

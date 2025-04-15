@@ -1,34 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { OrgMemberService } from './org_member.service';
-import { CreateOrgMemberDto } from './dto/create-org_member.dto';
-import { UpdateOrgMemberDto } from './dto/update-org_member.dto';
-
-@Controller('org-member')
+import { CreateOrgMemberDto, RemuveOrgMemberDto } from './dto/create-org_member.dto';
+@Controller('orgMember')
 export class OrgMemberController {
-  constructor(private readonly orgMemberService: OrgMemberService) {}
+  constructor(private readonly serivce: OrgMemberService) {}
 
   @Post()
   create(@Body() createOrgMemberDto: CreateOrgMemberDto) {
-    return this.orgMemberService.create(createOrgMemberDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.orgMemberService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.orgMemberService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrgMemberDto: UpdateOrgMemberDto) {
-    return this.orgMemberService.update(+id, updateOrgMemberDto);
+    
+    return this.serivce.addMember(createOrgMemberDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.orgMemberService.remove(+id);
+  remove(@Param('id',ParseIntPipe) id: number) {
+    return this.serivce.remove(id);
   }
 }

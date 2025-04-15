@@ -9,16 +9,23 @@ export class OrgMemberEntity extends BaseEntity {
  @PrimaryGeneratedColumn('increment', { unsigned: true })
   id: number;
 
-  @ManyToOne(() => UserEntity, (item) => item.id, { nullable: false })
-  user: UserEntity
+  @ManyToOne(() => UserEntity, (user) => user.id, { 
+    nullable: false,
+    onDelete: 'CASCADE' // Хэрэглэгч устгагдвал холбоосыг устгах
+  })
+  @JoinColumn({ name: 'user_id' })
+  user: UserEntity;
 
-  @ManyToOne(() => Organization, (item) => item.id, { nullable: false })
-  organization: Organization
+  @ManyToOne(() => Organization, (org) => org.members, { 
+    nullable: false,
+    onDelete: 'CASCADE' // Организаци устгагдвал холбоосыг устгах
+  })
+  @JoinColumn({ name: 'org_id' })
+  organization: Organization;
 
   @Column({ name: 'user_id', type: 'int', unsigned: true })
   userId: number
-  @JoinColumn({ name: 'organization_id' })
-
+  
   @Column({ name: 'org_id', type: 'int', unsigned: true })
   orgId: number
 
