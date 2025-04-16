@@ -1,34 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, forwardRef, BadRequestException } from '@nestjs/common';
 import { PackageItemService } from './package_item.service';
 import { CreatePackageItemDto } from './dto/create-package_item.dto';
 import { UpdatePackageItemDto } from './dto/update-package_item.dto';
+import { OrgMemberService } from '../org_member/org_member.service';
 
 @Controller('package-item')
 export class PackageItemController {
-  constructor(private readonly packageItemService: PackageItemService) {}
+  constructor(private readonly packageItemService: PackageItemService,
+  @Inject(forwardRef(() => OrgMemberService)) private readonly orgMemberService: OrgMemberService,
+
+  ) {}
 
   @Post()
-  create(@Body() createPackageItemDto: CreatePackageItemDto) {
-    return this.packageItemService.create(createPackageItemDto);
+  async create(@Body() input: CreatePackageItemDto) {
+
+    const orgMember = await this.orgMemberService.getOrgMember({id:input?.registeredById },{user:true})
+    if (!orgMember) throw new BadRequestException('orgMember is not found');
+
+    return this.packageItemService.create(input, orgMember);
   }
 
-  @Get()
-  findAll() {
-    return this.packageItemService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.packageItemService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePackageItemDto: UpdatePackageItemDto) {
-    return this.packageItemService.update(+id, updatePackageItemDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.packageItemService.remove(+id);
-  }
 }

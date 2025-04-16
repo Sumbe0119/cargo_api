@@ -1,0 +1,35 @@
+@localUrl = http://localhost:8080/api
+@baseUrl = 
+@accessToken=
+
+### login
+POST {{localUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "phone": "86662422",
+  "password": "admin$123"
+}
+
+### create
+POST {{localUrl}}/package-item
+Content-Type: application/json
+
+{
+  "height": 40,
+  "width": 30,
+  "weight": 8,
+  "length": 50,
+  "registeredById": 12,
+  "warehouseId": 10,
+  "organizationId": 1,
+  "trackCode": "UB123454856",
+  "price": 15000,
+  "notes": "test 2 бараа",
+  "isExpress": false,
+  "broken": false,
+  "deliveryRequested": false
+}
+
+
+

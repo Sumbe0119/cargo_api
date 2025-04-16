@@ -1,4 +1,4 @@
-import { Exclude } from 'class-transformer';
+import { Exclude,instanceToPlain } from 'class-transformer';
 import { Entity, BeforeInsert, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, OneToMany, Index } from 'typeorm';
 import { genSalt, hash, compare } from 'bcrypt';
 import { CommonState } from 'src/common/enum';
@@ -27,6 +27,7 @@ export class UserEntity {
   email: string;
 
   @Index()
+  @Exclude()
   @Column('varchar', { length: 255, nullable: true })
   phone: string | null;
 
@@ -40,9 +41,11 @@ export class UserEntity {
   @OneToMany(() => OrgMemberEntity, (orgMember) => orgMember.user)
   orgMember: OrgMemberEntity[];
 
+  @Exclude()
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
+  @Exclude()
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
 
@@ -54,5 +57,9 @@ export class UserEntity {
 
   async validPassword(unencryptedPassword: string): Promise<boolean> {
     return compare(unencryptedPassword, this.password);
+  }
+  
+  toJSON() {
+    return instanceToPlain(this)
   }
 }

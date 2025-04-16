@@ -22,26 +22,6 @@ export class PackageItem {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => OrgMemberEntity, { nullable: false })
-  @JoinColumn({ name: 'registered_by_id' })
-  registeredBy: OrgMemberEntity;
-
-  @Column({ name: 'warehouse_id' })
-  warehouseId: number;
-
-  @ManyToOne(() => Warehouse,(warehouse)=>warehouse.id, { nullable: false })
-  @JoinColumn({ name: 'warehouse_id' })
-  @Index()
-  warehouse: Warehouse;
-
-  @Column({ name: 'organization_id' })
-  organizationId: number;
-
-  @ManyToOne(() => Organization, (org)=>(org.id), { nullable: false })
-  @JoinColumn({ name: 'organization_id' })
-  @Index()
-  organization: Organization;
-
   // Хэмжээсүүд (метр, кг)
   @Column('decimal', { precision: 10, scale: 2, nullable: false })
   height: number;
@@ -54,6 +34,45 @@ export class PackageItem {
 
   @Column('decimal', { precision: 10, scale: 2, nullable: false })
   length: number;
+  
+  @ManyToOne(() => OrgMemberEntity, { nullable: false })
+  @JoinColumn({ name: 'registered_by_id' })
+  registeredBy: OrgMemberEntity;
+
+  @Column({ name: 'registered_by_id' })
+  registeredById: number;
+
+  @Column({ name: 'warehouse_id' })
+  warehouseId: number;
+
+  @ManyToOne(() => Warehouse,(warehouse)=>warehouse.id, { nullable: false })
+  @JoinColumn({ name: 'warehouse_id' })
+  @Index()
+  warehouse: Warehouse;
+
+   // Санхүүгийн мэдээлэл
+  @Column('decimal', { precision: 12, scale: 2, nullable: true })
+  price: number;
+  
+  // Тээврийн мэдээлэл
+  @Column({ nullable: true, name: 'track_code', unique: true })
+  @Index()
+  trackCode: string;
+
+  @Column({ type: 'text', nullable: true })
+  notes: string;
+
+  // Зурагнууд (JSON array хэлбэрээр хадгалах)
+  @Column( { nullable: true })
+  image: string;
+
+  @Column({ name: 'organization_id' })
+  organizationId: number;
+
+  @ManyToOne(() => Organization, (org)=>(org.id), { nullable: false })
+  @JoinColumn({ name: 'organization_id' })
+  @Index()
+  organization: Organization;
 
   // Төлөв байдал
   @Column({
@@ -93,27 +112,13 @@ export class PackageItem {
   @Column({ name: 'finished_at', nullable: true })
   finishedAt: Date;
 
-  // Санхүүгийн мэдээлэл
-  @Column('decimal', { precision: 12, scale: 2, nullable: true })
-  price: number;
-  
-  // Тээврийн мэдээлэл
-  @Column({ nullable: true, name: 'track_code', unique: true })
-  @Index()
-  trackCode: string;
-
   // Нэмэлт тэмдэглэлүүд
   @Column({ default: false })
-  isFast: boolean;
+  isExpress: boolean;
 
   @Column({ default: false, name: 'is_broken' })
   broken: boolean;
 
-  @Column({ type: 'text', nullable: true })
-  notes: string;
-
-  // Зурагнууд (JSON array хэлбэрээр хадгалах)
-  @Column( { nullable: true })
-  image: string;
- 
+  @Column({ default: false })
+  deliveryRequested: boolean
 }
